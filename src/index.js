@@ -5,52 +5,43 @@ import API from './fetchCountries';
 import tempTargetCountry from './tamplates/targetCountry';
 import { Notify } from 'notiflix/build/notiflix-notify-aio';
 
-// У проектах посилання виносятся у окремий файл (наприклад об'єкт "refs") та імпортуються в основний
+// У проектах змінні виносятся у окремий файл (наприклад в об'єкт "refs" через створену функцію яку імпортують) та імпортуються в основний
 
-const handlTargetCountry = Handlebars.compile(tempTargetCountry);
 const input = document.querySelector('#search-box');
-const DEBOUNCE_DELAY = 2000;  
 const countryInfo = document.querySelector('.country-info');
 const countryList = document.querySelector('.country-list');
+const handlTargetCountry = Handlebars.compile(tempTargetCountry);
+const DEBOUNCE_DELAY = 300;
 
-input.addEventListener('input',  debounce(serchCountry, DEBOUNCE_DELAY));
+input.addEventListener('input', debounce(serchCountry, DEBOUNCE_DELAY));
 
 function serchCountry(e) {
   e.preventDefault();
-  
+
   const inputData = input.value.trim();
-cleanHtml();
-  
-  if (inputData == "") {
-  return notyIfstringEmpty();
+  cleanHtml();
+
+  if (inputData == '') {
+    return;
+  }
+  API.fetchDataCountry(inputData).then(markupCountries).catch(onFetchRejact);
+  // .finally(() => );
 }
-  API.fetchDataCountry(inputData)
-    .then(markupCountries)
-    .catch(onFetchRejact)
-    .finally(() => inputData);
-};
 
 function markupCountries(data) {
-
   if (data.length > 10) {
-
-    return onFetchNotify();
-
+    return notyIfToMuchCountries();
   } else if (data.length >= 2 && data.length <= 10) {
-
-    markupListCounries(data);
-
+    return markupListCounries(data);
   } else if (data.length === 1) {
-
-    markupOneCountries(data);
-
-  } else (data.length === 0); {
-   
-     return onFetchRejact()
+    return markupOneCountry(data);
+  } else data.length === 0;
+  {
+    return onFetchRejact();
   }
 }
 
-function markupListCounries() {
+function markupListCounries(data) {
   const countriesListMarkup = data
     .map(({ flags, name }) => {
       return `<li>
@@ -62,7 +53,7 @@ function markupListCounries() {
   return countryList.insertAdjacentHTML('beforeend', countriesListMarkup);
 }
 
-function markupOneCountries() {
+function markupOneCountry(data) {
   // Шаблон створений за допомогою шаблонізатору Handlebars
   return (countryInfo.innerHTML = handlTargetCountry(...data));
 }
@@ -71,12 +62,8 @@ function onFetchRejact() {
   Notify.failure('Oops, there is no country with that name');
 }
 
-function onFetchNotify() {
+function notyIfToMuchCountries() {
   Notify.success('Too many matches found. Please enter a more specific name.');
-}
-
-function notyIfstringEmpty() {
-  Notify.success('This string is empty.');
 }
 
 function cleanHtml() {

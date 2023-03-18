@@ -3,12 +3,13 @@ function fetchDataCountry(country) {
   return fetch(
     `${BASE_URL}/name/${country}?fields=name,capital,population,flags,languages`
   ).then(response => {
+    //  На разі частина про помилку 404 не обов'язкова тому що це виправили і в than не потрапляє
     if (!response.ok) {
-      //  На разі частина про помилку 404 не обов'язкова тому що це виправили (здається)
+     
       if (response.status === 404) {
         return [];
       }
-      throw new Error(response.status);
+      throw new Error();
     }
     const data = response.json();
     return data;

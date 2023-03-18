@@ -7,9 +7,11 @@ const tamp = `<h2><img src="{{flags.png}}" width = '40' alt="{{name.official}}">
         Population: {{population}}
     </li>
     <li>
-     {{#each languages}}
-        languages: {{this}}
-     {{/each}}   
+    <ul style = 'list-style: none; padding: 0px'>
+     languages: {{#each languages}}
+        {{this}}{{#unless @last}},{{/unless}}
+     {{/each}}
+     </ul>   
     </li>    
 </ul>`;
 
