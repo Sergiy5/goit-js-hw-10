@@ -59,11 +59,15 @@ function markupOneCountry(data) {
 }
 
 function onFetchRejact() {
-  Notify.failure('Oops, there is no country with that name');
+  Notify.failure('Oops, there is no country with that name', {
+    position: 'center-top',
+  });
 }
 
 function notyIfToMuchCountries() {
-  Notify.success('Too many matches found. Please enter a more specific name.');
+  Notify.success('Too many matches found. Please enter a more specific name.', {
+    position: 'center-top',
+  });
 }
 
 function cleanHtml() {
