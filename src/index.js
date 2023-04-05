@@ -17,7 +17,8 @@ input.addEventListener('input', debounce(serchCountry, DEBOUNCE_DELAY));
 
 function serchCountry(e) {
   e.preventDefault();
-
+  // Якщо слухач подій підключений до форми з кількома інпутами тоді потрібно писати
+  // const form = e.сurrentTarget.elements.query.value; де query це ім'я інпуту
   const inputData = input.value.trim();
   cleanHtml();
 
